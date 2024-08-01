@@ -25,6 +25,7 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
 
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +42,7 @@ jobs:
         run: tox
 
       - name: Upload coverage
-        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.11' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12' }}
         uses: actions/upload-artifact@v3
         with:
           name: cbytesparse-coverage
@@ -49,7 +50,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload to codecov
-        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.11' }}
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12' }}
         uses: codecov/codecov-action@v3
         with:
           files: coverage.xml
