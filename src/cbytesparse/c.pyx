@@ -137,25 +137,7 @@ cdef extern from *:
 
 # =====================================================================================================================
 
-# FIXME: Not yet provided by the current Cython (0.29.x)
-cdef void* PyMem_Calloc(size_t nelem, size_t elsize):
-    cdef:
-        void* ptr
-        size_t total
-
-    if CannotMulSizeU(nelem, elsize):
-        return NULL  # overflow
-    total = nelem * elsize
-
-    ptr = PyMem_Malloc(total)
-    if ptr:
-        memset(ptr, 0, total)
-    return ptr
-
-
-# =====================================================================================================================
-
-cdef size_t Downsize(size_t allocated, size_t requested) nogil:
+cdef size_t Downsize(size_t allocated, size_t requested) noexcept nogil:
     # Note: free margin will be either before and after allocated data
     cdef size_t resized
 
@@ -177,7 +159,7 @@ cdef size_t Downsize(size_t allocated, size_t requested) nogil:
     return resized
 
 
-cdef size_t Upsize(size_t allocated, size_t requested) nogil:
+cdef size_t Upsize(size_t allocated, size_t requested) noexcept nogil:
     # Note: free margin will be either before and after allocated data
     cdef size_t resized = requested
 
@@ -193,7 +175,7 @@ cdef size_t Upsize(size_t allocated, size_t requested) nogil:
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-cdef const void* memrchr(const void *ptr, int ch, size_t count) nogil:
+cdef const void* memrchr(const void *ptr, int ch, size_t count) noexcept nogil:
     cdef:
         const byte_t* data_ptr = <const byte_t*>ptr
         const byte_t* cur_ptr = &data_ptr[count]
@@ -207,7 +189,7 @@ cdef const void* memrchr(const void *ptr, int ch, size_t count) nogil:
     return NULL
 
 
-cdef void Reverse(byte_t* buffer, size_t start, size_t endin) nogil:
+cdef void Reverse(byte_t* buffer, size_t start, size_t endin) noexcept nogil:
     cdef:
         byte_t t
 
@@ -230,7 +212,7 @@ cdef bint IsSequence(object obj) except -1:
 
 # =====================================================================================================================
 
-cdef bint CannotAddSizeU(size_t a, size_t b) nogil:
+cdef bint CannotAddSizeU(size_t a, size_t b) noexcept nogil:
     return SIZE_MAX - a < b
 
 
@@ -244,7 +226,7 @@ cdef size_t AddSizeU(size_t a, size_t b) except? -1:
     return a + b
 
 
-cdef bint CannotSubSizeU(size_t a, size_t b) nogil:
+cdef bint CannotSubSizeU(size_t a, size_t b) noexcept nogil:
     return a < b
 
 
@@ -258,7 +240,7 @@ cdef size_t SubSizeU(size_t a, size_t b) except? -1:
     return a - b
 
 
-cdef bint CannotMulSizeU(size_t a, size_t b) nogil:
+cdef bint CannotMulSizeU(size_t a, size_t b) noexcept nogil:
     cdef:
         size_t r = a * b
     return a and b and (r < a or r < b)
@@ -276,7 +258,7 @@ cdef size_t MulSizeU(size_t a, size_t b) except? -1:
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-cdef bint CannotAddSizeS(ssize_t a, ssize_t b) nogil:
+cdef bint CannotAddSizeS(ssize_t a, ssize_t b) noexcept nogil:
     return ((b > 0 and a > SSIZE_MAX - b) or
             (b < 0 and a < SSIZE_MIN - b))
 
@@ -291,7 +273,7 @@ cdef ssize_t AddSizeS(ssize_t a, ssize_t b) except? -1:
     return a + b
 
 
-cdef bint CannotSubSizeS(ssize_t a, ssize_t b) nogil:
+cdef bint CannotSubSizeS(ssize_t a, ssize_t b) noexcept nogil:
     return ((b > 0 and a < SSIZE_MIN + b) or
             (b < 0 and a > SSIZE_MAX + b))
 
@@ -306,7 +288,7 @@ cdef ssize_t SubSizeS(ssize_t a, ssize_t b) except? -1:
     return a - b
 
 
-cdef bint CannotMulSizeS(ssize_t a, ssize_t b) nogil:
+cdef bint CannotMulSizeS(ssize_t a, ssize_t b) noexcept nogil:
     with cython.cdivision(True):
         if a > 0:
             if b > 0:
@@ -332,7 +314,7 @@ cdef ssize_t MulSizeS(ssize_t a, ssize_t b) except? -1:
 
 # =====================================================================================================================
 
-cdef bint CannotAddAddrU(addr_t a, addr_t b) nogil:
+cdef bint CannotAddAddrU(addr_t a, addr_t b) noexcept nogil:
     return ADDR_MAX - a < b
 
 
@@ -346,7 +328,7 @@ cdef addr_t AddAddrU(addr_t a, addr_t b) except? -1:
     return a + b
 
 
-cdef bint CannotSubAddrU(addr_t a, addr_t b) nogil:
+cdef bint CannotSubAddrU(addr_t a, addr_t b) noexcept nogil:
     return a < b
 
 
@@ -360,7 +342,7 @@ cdef addr_t SubAddrU(addr_t a, addr_t b) except? -1:
     return a - b
 
 
-cdef bint CannotMulAddrU(addr_t a, addr_t b) nogil:
+cdef bint CannotMulAddrU(addr_t a, addr_t b) noexcept nogil:
     cdef:
         addr_t r = a * b
     return a and b and (r < a or r < b)
@@ -376,7 +358,7 @@ cdef addr_t MulAddrU(addr_t a, addr_t b) except? -1:
     return a * b
 
 
-cdef bint CannotAddrToSizeU(addr_t a) nogil:
+cdef bint CannotAddrToSizeU(addr_t a) noexcept nogil:
     return a > <addr_t>SIZE_MAX
 
 
@@ -392,7 +374,7 @@ cdef size_t AddrToSizeU(addr_t a) except? -1:
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-cdef bint CannotAddAddrS(saddr_t a, saddr_t b) nogil:
+cdef bint CannotAddAddrS(saddr_t a, saddr_t b) noexcept nogil:
     return ((b > 0 and a > SADDR_MAX - b) or
             (b < 0 and a < SADDR_MIN - b))
 
@@ -407,7 +389,7 @@ cdef saddr_t AddAddrS(saddr_t a, saddr_t b) except? -1:
     return a + b
 
 
-cdef bint CannotSubAddrS(saddr_t a, saddr_t b) nogil:
+cdef bint CannotSubAddrS(saddr_t a, saddr_t b) noexcept nogil:
     return ((b > 0 and a < SADDR_MIN + b) or
             (b < 0 and a > SADDR_MAX + b))
 
@@ -422,7 +404,7 @@ cdef saddr_t SubAddrS(saddr_t a, saddr_t b) except? -1:
     return a - b
 
 
-cdef bint CannotMulAddrS(saddr_t a, saddr_t b) nogil:
+cdef bint CannotMulAddrS(saddr_t a, saddr_t b) noexcept nogil:
     with cython.cdivision(True):
         if a > 0:
             if b > 0:
@@ -446,7 +428,7 @@ cdef saddr_t MulAddrS(saddr_t a, saddr_t b) except? -1:
     return a * b
 
 
-cdef bint CannotAddrToSizeS(saddr_t a) nogil:
+cdef bint CannotAddrToSizeS(saddr_t a) noexcept nogil:
     return a < <saddr_t>SSIZE_MIN or a > <saddr_t>SSIZE_MAX
 
 
@@ -464,7 +446,7 @@ cdef ssize_t AddrToSizeS(saddr_t a) except? -1:
 
 cdef bint Buffer_RichCmp_(const byte_t* data_ptr, size_t data_size,
                           const byte_t* token_ptr, size_t token_size,
-                          int op) nogil:
+                          int op) noexcept nogil:
 
     if op == Py_EQ:
         if data_size != token_size:
@@ -509,7 +491,7 @@ cdef bint Buffer_RichCmp_(const byte_t* data_ptr, size_t data_size,
 
 cdef bint Buffer_RichCmp(const byte_t[:] data_view,
                          const byte_t[:] token_view,
-                         int op) nogil:
+                         int op) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_RichCmp_(&data_view[0], len(data_view),
@@ -519,7 +501,7 @@ cdef bint Buffer_RichCmp(const byte_t[:] data_view,
 
 cdef size_t Buffer_Count_(const byte_t* data_ptr, size_t data_size,
                           const byte_t* token_ptr, size_t token_size,
-                          size_t data_start, size_t data_endex) nogil:
+                          size_t data_start, size_t data_endex) noexcept nogil:
     cdef:
         size_t count = 0
 
@@ -543,7 +525,7 @@ cdef size_t Buffer_Count_(const byte_t* data_ptr, size_t data_size,
 
 cdef size_t Buffer_Count(const byte_t[:] data_view,
                          const byte_t[:] token_view,
-                         size_t data_start, size_t data_endex) nogil:
+                         size_t data_start, size_t data_endex) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_Count_(&data_view[0], len(data_view),
@@ -552,7 +534,7 @@ cdef size_t Buffer_Count(const byte_t[:] data_view,
 
 
 cdef bint Buffer_StartsWith_(const byte_t* data_ptr, size_t data_size,
-                             const byte_t* token_ptr, size_t token_size) nogil:
+                             const byte_t* token_ptr, size_t token_size) noexcept nogil:
 
     if token_size == 0: return True
     if data_size < token_size: return False
@@ -560,7 +542,7 @@ cdef bint Buffer_StartsWith_(const byte_t* data_ptr, size_t data_size,
 
 
 cdef bint Buffer_StartsWith(const byte_t[:] data_view,
-                            const byte_t[:] token_view) nogil:
+                            const byte_t[:] token_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_StartsWith_(&data_view[0], len(data_view),
@@ -568,7 +550,7 @@ cdef bint Buffer_StartsWith(const byte_t[:] data_view,
 
 
 cdef bint Buffer_EndsWith_(const byte_t* data_ptr, size_t data_size,
-                           const byte_t* token_ptr, size_t token_size) nogil:
+                           const byte_t* token_ptr, size_t token_size) noexcept nogil:
 
     if token_size == 0: return True
     if data_size < token_size: return False
@@ -576,7 +558,7 @@ cdef bint Buffer_EndsWith_(const byte_t* data_ptr, size_t data_size,
 
 
 cdef bint Buffer_EndsWith(const byte_t[:] data_view,
-                          const byte_t[:] token_view) nogil:
+                          const byte_t[:] token_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_EndsWith_(&data_view[0], len(data_view),
@@ -585,7 +567,7 @@ cdef bint Buffer_EndsWith(const byte_t[:] data_view,
 
 cdef bint Buffer_Contains_(const byte_t* data_ptr, size_t data_size,
                            const byte_t* token_ptr, size_t token_size,
-                           size_t data_start, size_t data_endex) nogil:
+                           size_t data_start, size_t data_endex) noexcept nogil:
 
     return Buffer_Find_(data_ptr, data_size,
                         token_ptr, token_size,
@@ -594,7 +576,7 @@ cdef bint Buffer_Contains_(const byte_t* data_ptr, size_t data_size,
 
 cdef bint Buffer_Contains(const byte_t[:] data_view,
                           const byte_t[:] token_view,
-                          size_t data_start, size_t data_endex) nogil:
+                          size_t data_start, size_t data_endex) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_Contains_(&data_view[0], len(data_view),
@@ -604,7 +586,7 @@ cdef bint Buffer_Contains(const byte_t[:] data_view,
 
 cdef ssize_t Buffer_Find_(const byte_t* data_ptr, size_t data_size,
                           const byte_t* token_ptr, size_t token_size,
-                          size_t data_start, size_t data_endex) nogil:
+                          size_t data_start, size_t data_endex) noexcept nogil:
     cdef:
         const byte_t* data_cur
         const byte_t* data_end
@@ -627,7 +609,7 @@ cdef ssize_t Buffer_Find_(const byte_t* data_ptr, size_t data_size,
 
 cdef ssize_t Buffer_Find(const byte_t[:] data_view,
                          const byte_t[:] token_view,
-                         size_t data_start, size_t data_endex) nogil:
+                         size_t data_start, size_t data_endex) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_Find_(&data_view[0], len(data_view),
@@ -637,7 +619,7 @@ cdef ssize_t Buffer_Find(const byte_t[:] data_view,
 
 cdef ssize_t Buffer_RevFind_(const byte_t* data_ptr, size_t data_size,
                              const byte_t* token_ptr, size_t token_size,
-                             size_t data_start, size_t data_endex) nogil:
+                             size_t data_start, size_t data_endex) noexcept nogil:
     cdef:
         const byte_t* data_cur
         const byte_t* data_end
@@ -660,7 +642,7 @@ cdef ssize_t Buffer_RevFind_(const byte_t* data_ptr, size_t data_size,
 
 cdef ssize_t Buffer_RevFind(const byte_t[:] data_view,
                             const byte_t[:] token_view,
-                            size_t data_start, size_t data_endex) nogil:
+                            size_t data_start, size_t data_endex) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_RevFind_(&data_view[0], len(data_view),
@@ -718,7 +700,7 @@ cdef size_t Buffer_Replace_(byte_t* data_ptr, size_t data_size,
                             const byte_t* old_ptr, size_t old_size,
                             const byte_t* new_ptr,
                             size_t count,
-                            size_t data_start, size_t data_endex) nogil:
+                            size_t data_start, size_t data_endex) noexcept nogil:
     cdef:
         ssize_t index
         size_t times = 0
@@ -759,7 +741,7 @@ cdef size_t Buffer_RevReplace_(byte_t* data_ptr, size_t data_size,
                                const byte_t* old_ptr, size_t old_size,
                                const byte_t* new_ptr,
                                size_t count,
-                               size_t data_start, size_t data_endex) nogil:
+                               size_t data_start, size_t data_endex) noexcept nogil:
     cdef:
         ssize_t index
         size_t times = 0
@@ -796,7 +778,7 @@ cdef size_t Buffer_RevReplace(byte_t[:] data_view,
                                   data_start, data_endex)
 
 
-cdef bint Buffer_IsAlNum_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsAlNum_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -813,13 +795,13 @@ cdef bint Buffer_IsAlNum_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsAlNum(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsAlNum(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsAlNum_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsAlpha_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsAlpha_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -835,13 +817,13 @@ cdef bint Buffer_IsAlpha_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsAlpha(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsAlpha(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsAlpha_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsASCII_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsASCII_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -853,13 +835,13 @@ cdef bint Buffer_IsASCII_(const byte_t* data_ptr, size_t data_size) nogil:
     return True
 
 
-cdef bint Buffer_IsASCII(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsASCII(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsASCII_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsDigit_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsDigit_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -874,13 +856,13 @@ cdef bint Buffer_IsDigit_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsDigit(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsDigit(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsDigit_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsIdentifier_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsIdentifier_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -906,13 +888,13 @@ cdef bint Buffer_IsIdentifier_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsIdentifier(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsIdentifier(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsIdentifier_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsLower_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsLower_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -928,13 +910,13 @@ cdef bint Buffer_IsLower_(const byte_t* data_ptr, size_t data_size) nogil:
     return cased
 
 
-cdef bint Buffer_IsLower(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsLower(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsLower_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsUpper_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsUpper_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -950,13 +932,13 @@ cdef bint Buffer_IsUpper_(const byte_t* data_ptr, size_t data_size) nogil:
     return cased
 
 
-cdef bint Buffer_IsUpper(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsUpper(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsUpper_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsPrintable_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsPrintable_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -971,13 +953,13 @@ cdef bint Buffer_IsPrintable_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsPrintable(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsPrintable(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsPrintable_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsSpace_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsSpace_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -993,13 +975,13 @@ cdef bint Buffer_IsSpace_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsSpace(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsSpace(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsSpace_(&data_view[0], len(data_view))
 
 
-cdef bint Buffer_IsTitle_(const byte_t* data_ptr, size_t data_size) nogil:
+cdef bint Buffer_IsTitle_(const byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1027,13 +1009,13 @@ cdef bint Buffer_IsTitle_(const byte_t* data_ptr, size_t data_size) nogil:
         return False
 
 
-cdef bint Buffer_IsTitle(const byte_t[:] data_view) nogil:
+cdef bint Buffer_IsTitle(const byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         return Buffer_IsTitle_(&data_view[0], len(data_view))
 
 
-cdef void Buffer_Lower_(byte_t* data_ptr, size_t data_size) nogil:
+cdef void Buffer_Lower_(byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1044,13 +1026,13 @@ cdef void Buffer_Lower_(byte_t* data_ptr, size_t data_size) nogil:
             data_ptr[i] += ASCII_A_LOWER - ASCII_A_UPPER
 
 
-cdef void Buffer_Lower(byte_t[:] data_view) nogil:
+cdef void Buffer_Lower(byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         Buffer_Lower_(&data_view[0], len(data_view))
 
 
-cdef void Buffer_Upper_(byte_t* data_ptr, size_t data_size) nogil:
+cdef void Buffer_Upper_(byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1061,13 +1043,13 @@ cdef void Buffer_Upper_(byte_t* data_ptr, size_t data_size) nogil:
             data_ptr[i] -= ASCII_A_LOWER - ASCII_A_UPPER
 
 
-cdef void Buffer_Upper(byte_t[:] data_view) nogil:
+cdef void Buffer_Upper(byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         Buffer_Upper_(&data_view[0], len(data_view))
 
 
-cdef void Buffer_SwapCase_(byte_t* data_ptr, size_t data_size) nogil:
+cdef void Buffer_SwapCase_(byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1082,13 +1064,13 @@ cdef void Buffer_SwapCase_(byte_t* data_ptr, size_t data_size) nogil:
             data_ptr[i] -= ASCII_A_LOWER - ASCII_A_UPPER
 
 
-cdef void Buffer_SwapCase(byte_t[:] data_view) nogil:
+cdef void Buffer_SwapCase(byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         Buffer_SwapCase_(&data_view[0], len(data_view))
 
 
-cdef void Buffer_Capitalize_(byte_t* data_ptr, size_t data_size) nogil:
+cdef void Buffer_Capitalize_(byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1104,13 +1086,13 @@ cdef void Buffer_Capitalize_(byte_t* data_ptr, size_t data_size) nogil:
             data_ptr[i] += ASCII_A_LOWER - ASCII_A_UPPER
 
 
-cdef void Buffer_Capitalize(byte_t[:] data_view) nogil:
+cdef void Buffer_Capitalize(byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         Buffer_Capitalize_(&data_view[0], len(data_view))
 
 
-cdef void Buffer_Title_(byte_t* data_ptr, size_t data_size) nogil:
+cdef void Buffer_Title_(byte_t* data_ptr, size_t data_size) noexcept nogil:
     cdef:
         size_t i
         byte_t c
@@ -1133,7 +1115,7 @@ cdef void Buffer_Title_(byte_t* data_ptr, size_t data_size) nogil:
             inside = False
 
 
-cdef void Buffer_Title(byte_t[:] data_view) nogil:
+cdef void Buffer_Title(byte_t[:] data_view) noexcept nogil:
 
     with cython.boundscheck(False):
         Buffer_Title_(&data_view[0], len(data_view))
@@ -1160,7 +1142,7 @@ cdef bytes Buffer_MakeTrans(const byte_t[:] in_view,
         return Buffer_MakeTrans_(&in_view[0], len(in_view), &out_view[0])
 
 
-cdef void Buffer_Translate_(byte_t* data_ptr, size_t data_size, const byte_t* table_ptr) nogil:
+cdef void Buffer_Translate_(byte_t* data_ptr, size_t data_size, const byte_t* table_ptr) noexcept nogil:
     cdef:
         size_t i
 
@@ -2242,7 +2224,7 @@ cdef Block_* Block_FromObject(addr_t address, object obj, bint nonnull) except N
                 return Block_Alloc(address, 0, False)
 
 
-cdef void Block_Reverse(Block_* that) nogil:
+cdef void Block_Reverse(Block_* that) noexcept nogil:
     cdef:
         size_t start = that.start
         size_t endex = that.endex
@@ -2293,27 +2275,27 @@ cdef Block_* Block_Release(Block_* that):
     return NULL
 
 
-cdef bint Block_Bool(const Block_* that) nogil:
+cdef bint Block_Bool(const Block_* that) noexcept nogil:
     return that.start < that.endex
 
 
-cdef size_t Block_Length(const Block_* that) nogil:
+cdef size_t Block_Length(const Block_* that) noexcept nogil:
     return that.endex - that.start
 
 
-cdef addr_t Block_Start(const Block_* that) nogil:
+cdef addr_t Block_Start(const Block_* that) noexcept nogil:
     return that.address
 
 
-cdef addr_t Block_Endex(const Block_* that) nogil:
+cdef addr_t Block_Endex(const Block_* that) noexcept nogil:
     return that.address + (that.endex - that.start)
 
 
-cdef addr_t Block_Endin(const Block_* that) nogil:
+cdef addr_t Block_Endin(const Block_* that) noexcept nogil:
     return that.address + (that.endex - that.start) - 1
 
 
-cdef addr_t Block_BoundAddress(const Block_* that, addr_t address) nogil:
+cdef addr_t Block_BoundAddress(const Block_* that, addr_t address) noexcept nogil:
     cdef:
         addr_t block_start = that.address
         addr_t block_endex = block_start + that.endex - that.start
@@ -2325,7 +2307,7 @@ cdef addr_t Block_BoundAddress(const Block_* that, addr_t address) nogil:
     return address
 
 
-cdef size_t Block_BoundAddressToOffset(const Block_* that, addr_t address) nogil:
+cdef size_t Block_BoundAddressToOffset(const Block_* that, addr_t address) noexcept nogil:
     cdef:
         addr_t block_start = that.address
         addr_t block_endex = block_start + that.endex - that.start
@@ -2337,7 +2319,7 @@ cdef size_t Block_BoundAddressToOffset(const Block_* that, addr_t address) nogil
     return <size_t>(address - block_start)
 
 
-cdef size_t Block_BoundOffset(const Block_* that, size_t offset) nogil:
+cdef size_t Block_BoundOffset(const Block_* that, size_t offset) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
 
@@ -2346,7 +2328,7 @@ cdef size_t Block_BoundOffset(const Block_* that, size_t offset) nogil:
     return offset
 
 
-cdef (addr_t, addr_t) Block_BoundAddressSlice(const Block_* that, addr_t start, addr_t endex) nogil:
+cdef (addr_t, addr_t) Block_BoundAddressSlice(const Block_* that, addr_t start, addr_t endex) noexcept nogil:
     cdef:
         addr_t block_start = that.address
         addr_t block_endex = block_start + (that.endex - that.start)
@@ -2367,7 +2349,7 @@ cdef (addr_t, addr_t) Block_BoundAddressSlice(const Block_* that, addr_t start, 
     return start, endex
 
 
-cdef (size_t, size_t) Block_BoundAddressSliceToOffset(const Block_* that, addr_t start, addr_t endex) nogil:
+cdef (size_t, size_t) Block_BoundAddressSliceToOffset(const Block_* that, addr_t start, addr_t endex) noexcept nogil:
     cdef:
         addr_t block_start = that.address
         addr_t block_endex = block_start + (that.endex - that.start)
@@ -2388,7 +2370,7 @@ cdef (size_t, size_t) Block_BoundAddressSliceToOffset(const Block_* that, addr_t
     return <size_t>(start - block_start), <size_t>(endex - block_start)
 
 
-cdef (size_t, size_t) Block_BoundOffsetSlice(const Block_* that, size_t start, size_t endex) nogil:
+cdef (size_t, size_t) Block_BoundOffsetSlice(const Block_* that, size_t start, size_t endex) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
 
@@ -2409,7 +2391,7 @@ cdef vint Block_CheckMutable(const Block_* that) except -1:
         raise RuntimeError('Existing exports of data: object cannot be re-sized')
 
 
-cdef bint Block_Eq_(const Block_* that, size_t size, const byte_t* buffer) nogil:
+cdef bint Block_Eq_(const Block_* that, size_t size, const byte_t* buffer) noexcept nogil:
     if size != that.endex - that.start:
         return False
 
@@ -2420,14 +2402,14 @@ cdef bint Block_Eq_(const Block_* that, size_t size, const byte_t* buffer) nogil
     return True
 
 
-cdef bint Block_Eq(const Block_* that, const Block_* other) nogil:
+cdef bint Block_Eq(const Block_* that, const Block_* other) noexcept nogil:
     # if that.address != other.address:
     #     return False
 
     return Block_Eq_(that, other.endex - other.start, &other.data[other.start])
 
 
-cdef int Block_Cmp_(const Block_* that, size_t size, const byte_t* buffer) nogil:
+cdef int Block_Cmp_(const Block_* that, size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         size_t size2 = that.endex - that.start
         size_t minsize = size2 if size2 < size else size
@@ -2442,14 +2424,14 @@ cdef int Block_Cmp_(const Block_* that, size_t size, const byte_t* buffer) nogil
         return -1 if size2 < size else +1
 
 
-cdef int Block_Cmp(const Block_* that, const Block_* other) nogil:
+cdef int Block_Cmp(const Block_* that, const Block_* other) noexcept nogil:
     # if that.address != other.address:
     #     return -1 if that.address < other.address else +1
 
     return Block_Cmp_(that, other.endex - other.start, &other.data[other.start])
 
 
-cdef ssize_t Block_Find__(const Block_* that, size_t start, size_t endex, byte_t value) nogil:
+cdef ssize_t Block_Find__(const Block_* that, size_t start, size_t endex, byte_t value) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
         const byte_t* ptr
@@ -2473,7 +2455,7 @@ cdef ssize_t Block_Find__(const Block_* that, size_t start, size_t endex, byte_t
 
 
 cdef ssize_t Block_Find_(const Block_* that, size_t start, size_t endex,
-                         size_t size, const byte_t* buffer) nogil:
+                         size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         size_t size2
         const byte_t* ptr
@@ -2512,7 +2494,7 @@ cdef ssize_t Block_Find_(const Block_* that, size_t start, size_t endex,
 
 
 cdef ssize_t Block_Find(const Block_* that, ssize_t start, ssize_t endex,
-                        size_t size, const byte_t* buffer) nogil:
+                        size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         ssize_t ssize = <ssize_t>(that.endex - that.start)
 
@@ -2529,7 +2511,7 @@ cdef ssize_t Block_Find(const Block_* that, ssize_t start, ssize_t endex,
     return Block_Find_(that, <size_t>start, <size_t>endex, size, buffer)
 
 
-cdef ssize_t Block_ReverseFind__(const Block_* that, size_t start, size_t endex, byte_t value) nogil:
+cdef ssize_t Block_ReverseFind__(const Block_* that, size_t start, size_t endex, byte_t value) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
         const byte_t* ptr
@@ -2554,7 +2536,7 @@ cdef ssize_t Block_ReverseFind__(const Block_* that, size_t start, size_t endex,
 
 
 cdef ssize_t Block_ReverseFind_(const Block_* that, size_t start, size_t endex,
-                                size_t size, const byte_t* buffer) nogil:
+                                size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         size_t size2
         const byte_t* ptr
@@ -2593,7 +2575,7 @@ cdef ssize_t Block_ReverseFind_(const Block_* that, size_t start, size_t endex,
 
 
 cdef ssize_t Block_ReverseFind(const Block_* that, ssize_t start, ssize_t endex,
-                               size_t size, const byte_t* buffer) nogil:
+                               size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         ssize_t ssize = <ssize_t>(that.endex - that.start)
 
@@ -2610,7 +2592,7 @@ cdef ssize_t Block_ReverseFind(const Block_* that, ssize_t start, ssize_t endex,
     return Block_ReverseFind_(that, <size_t>start, <size_t>endex, size, buffer)
 
 
-cdef size_t Block_Count__(const Block_* that, size_t start, size_t endex, byte_t value) nogil:
+cdef size_t Block_Count__(const Block_* that, size_t start, size_t endex, byte_t value) noexcept nogil:
     cdef:
         size_t count = 0
         size_t size = that.endex - that.start
@@ -2635,7 +2617,7 @@ cdef size_t Block_Count__(const Block_* that, size_t start, size_t endex, byte_t
 
 
 cdef size_t Block_Count_(const Block_* that, size_t start, size_t endex,
-                         size_t size, const byte_t* buffer) nogil:
+                         size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         size_t count = 0
         size_t size2
@@ -2676,7 +2658,7 @@ cdef size_t Block_Count_(const Block_* that, size_t start, size_t endex,
 
 
 cdef size_t Block_Count(const Block_* that, ssize_t start, ssize_t endex,
-                        size_t size, const byte_t* buffer) nogil:
+                        size_t size, const byte_t* buffer) noexcept nogil:
     cdef:
         ssize_t ssize = <ssize_t>(that.endex - that.start)
 
@@ -2855,15 +2837,15 @@ cdef Block_* Block_Clear(Block_* that) except NULL:
     return Block_Delete_(that, 0, that.endex - that.start)
 
 
-cdef byte_t* Block_At_(Block_* that, size_t offset) nogil:
+cdef byte_t* Block_At_(Block_* that, size_t offset) noexcept nogil:
     return &that.data[that.start + offset]
 
 
-cdef const byte_t* Block_At__(const Block_* that, size_t offset) nogil:
+cdef const byte_t* Block_At__(const Block_* that, size_t offset) noexcept nogil:
     return &that.data[that.start + offset]
 
 
-cdef byte_t Block_Get__(const Block_* that, size_t offset) nogil:
+cdef byte_t Block_Get__(const Block_* that, size_t offset) noexcept nogil:
     return that.data[that.start + offset]
 
 
@@ -2886,7 +2868,7 @@ cdef int Block_Get(const Block_* that, ssize_t offset) except -1:
     return Block_Get_(that, <size_t>offset)
 
 
-cdef byte_t Block_Set__(Block_* that, size_t offset, byte_t value) nogil:
+cdef byte_t Block_Set__(Block_* that, size_t offset, byte_t value) noexcept nogil:
     cdef:
         byte_t backup
 
@@ -3021,7 +3003,7 @@ cdef Block_* Block_ExtendLeft(Block_* that, const Block_* more) except NULL:
     return that
 
 
-cdef void Block_RotateLeft__(Block_* that, size_t offset) nogil:
+cdef void Block_RotateLeft__(Block_* that, size_t offset) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
         byte_t* data = &that.data[that.start]
@@ -3043,7 +3025,7 @@ cdef void Block_RotateLeft__(Block_* that, size_t offset) nogil:
             Reverse(data, 0, size - 1)
 
 
-cdef void Block_RotateLeft_(Block_* that, size_t offset) nogil:
+cdef void Block_RotateLeft_(Block_* that, size_t offset) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
 
@@ -3055,7 +3037,7 @@ cdef void Block_RotateLeft_(Block_* that, size_t offset) nogil:
         Block_RotateLeft__(that, offset)
 
 
-cdef void Block_RotateRight__(Block_* that, size_t offset) nogil:
+cdef void Block_RotateRight__(Block_* that, size_t offset) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
         byte_t* data = &that.data[that.start]
@@ -3080,7 +3062,7 @@ cdef void Block_RotateRight__(Block_* that, size_t offset) nogil:
             Reverse(data, 0, size - 1)
 
 
-cdef void Block_RotateRight_(Block_* that, size_t offset) nogil:
+cdef void Block_RotateRight_(Block_* that, size_t offset) noexcept nogil:
     cdef:
         size_t size = that.endex - that.start
 
@@ -3092,7 +3074,7 @@ cdef void Block_RotateRight_(Block_* that, size_t offset) nogil:
         Block_RotateRight__(that, offset)
 
 
-cdef void Block_Rotate(Block_* that, ssize_t offset) nogil:
+cdef void Block_Rotate(Block_* that, ssize_t offset) noexcept nogil:
     if offset < 0:
         Block_RotateLeft_(that, <size_t>-offset)
     else:
@@ -3958,7 +3940,7 @@ cdef Rack_* Rack_FromObject(object obj, saddr_t offset) except NULL:
         raise
 
 
-cdef void Rack_Reverse(Rack_* that) nogil:
+cdef void Rack_Reverse(Rack_* that) noexcept nogil:
     cdef:
         size_t index_start = that.start
         size_t index_endex = that.endex
@@ -3974,15 +3956,15 @@ cdef void Rack_Reverse(Rack_* that) nogil:
         index_start += 1
 
 
-cdef bint Rack_Bool(const Rack_* that) nogil:
+cdef bint Rack_Bool(const Rack_* that) noexcept nogil:
     return that.start < that.endex
 
 
-cdef size_t Rack_Length(const Rack_* that) nogil:
+cdef size_t Rack_Length(const Rack_* that) noexcept nogil:
     return that.endex - that.start
 
 
-cdef (addr_t, addr_t) Rack_BoundSlice(const Rack_* that, addr_t start, addr_t endex) nogil:
+cdef (addr_t, addr_t) Rack_BoundSlice(const Rack_* that, addr_t start, addr_t endex) noexcept nogil:
     cdef:
         const Block_* block
         addr_t block_start
@@ -4255,31 +4237,31 @@ cdef Rack_* Rack_Consolidate(Rack_* that) except NULL:
     return that
 
 
-cdef Block_** Rack_At_(Rack_* that, size_t offset) nogil:
+cdef Block_** Rack_At_(Rack_* that, size_t offset) noexcept nogil:
     return &that.blocks[that.start + offset]
 
 
-cdef const Block_** Rack_At__(const Rack_* that, size_t offset) nogil:
+cdef const Block_** Rack_At__(const Rack_* that, size_t offset) noexcept nogil:
     return <const Block_**>&that.blocks[that.start + offset]
 
 
-cdef Block_* Rack_First_(Rack_* that) nogil:
+cdef Block_* Rack_First_(Rack_* that) noexcept nogil:
     return that.blocks[that.start]
 
 
-cdef const Block_* Rack_First__(const Rack_* that) nogil:
+cdef const Block_* Rack_First__(const Rack_* that) noexcept nogil:
     return that.blocks[that.start]
 
 
-cdef Block_* Rack_Last_(Rack_* that) nogil:
+cdef Block_* Rack_Last_(Rack_* that) noexcept nogil:
     return that.blocks[that.endex - 1]
 
 
-cdef const Block_* Rack_Last__(const Rack_* that) nogil:
+cdef const Block_* Rack_Last__(const Rack_* that) noexcept nogil:
     return that.blocks[that.endex - 1]
 
 
-cdef Block_* Rack_Get__(const Rack_* that, size_t offset) nogil:
+cdef Block_* Rack_Get__(const Rack_* that, size_t offset) noexcept nogil:
     return that.blocks[that.start + offset]
 
 
@@ -4302,7 +4284,7 @@ cdef Block_* Rack_Get(const Rack_* that, ssize_t offset) except? NULL:
     return Rack_Get_(that, <size_t>offset)
 
 
-cdef Block_* Rack_Set__(Rack_* that, size_t offset, Block_* value) nogil:
+cdef Block_* Rack_Set__(Rack_* that, size_t offset, Block_* value) noexcept nogil:
     cdef:
         Block_* backup
 
@@ -4782,15 +4764,15 @@ cdef Rack_* Rack_DelSlice(Rack_* that, ssize_t start, ssize_t endex) except NULL
     return that
 
 
-cdef addr_t Rack_Start(const Rack_* that) nogil:
+cdef addr_t Rack_Start(const Rack_* that) noexcept nogil:
     return Block_Start(Rack_First__(that)) if Rack_Bool(that) else 0
 
 
-cdef addr_t Rack_Endex(const Rack_* that) nogil:
+cdef addr_t Rack_Endex(const Rack_* that) noexcept nogil:
     return Block_Endex(Rack_Last__(that)) if Rack_Bool(that) else 0
 
 
-cdef ssize_t Rack_IndexAt(const Rack_* that, addr_t address) nogil:
+cdef ssize_t Rack_IndexAt(const Rack_* that, addr_t address) noexcept nogil:
     cdef:
         ssize_t left = 0
         ssize_t right = <ssize_t>(that.endex - that.start)
@@ -4822,7 +4804,7 @@ cdef ssize_t Rack_IndexAt(const Rack_* that, addr_t address) nogil:
         return -1
 
 
-cdef ssize_t Rack_IndexStart(const Rack_* that, addr_t address) nogil:
+cdef ssize_t Rack_IndexStart(const Rack_* that, addr_t address) noexcept nogil:
     cdef:
         ssize_t left = 0
         ssize_t right = <ssize_t>(that.endex - that.start)
@@ -4854,7 +4836,7 @@ cdef ssize_t Rack_IndexStart(const Rack_* that, addr_t address) nogil:
         return left
 
 
-cdef ssize_t Rack_IndexEndex(const Rack_* that, addr_t address) nogil:
+cdef ssize_t Rack_IndexEndex(const Rack_* that, addr_t address) noexcept nogil:
     cdef:
         ssize_t left = 0
         ssize_t right = <ssize_t>(that.endex - that.start)
@@ -5446,15 +5428,15 @@ cdef Memory_* Memory_IMul(Memory_* that, addr_t times) except NULL:
     return that
 
 
-cdef bint Memory_Bool(const Memory_* that) nogil:
+cdef bint Memory_Bool(const Memory_* that) noexcept nogil:
     return Rack_Bool(that.blocks)
 
 
-cdef addr_t Memory_Length(const Memory_* that) nogil:
+cdef addr_t Memory_Length(const Memory_* that) noexcept nogil:
     return Memory_Endex(that) - Memory_Start(that)
 
 
-cdef bint Memory_IsEmpty(const Memory_* that) nogil:
+cdef bint Memory_IsEmpty(const Memory_* that) noexcept nogil:
     return not Rack_Bool(that.blocks)
 
 
@@ -6248,7 +6230,7 @@ cdef object Memory_Cut(Memory_* that, object start, object endex, bint bound):
 
 
 
-cdef void Memory_Reverse(Memory_* that) nogil:
+cdef void Memory_Reverse(Memory_* that) noexcept nogil:
     cdef:
         Rack_* blocks = that.blocks
         size_t block_count = Rack_Length(blocks)
@@ -6269,7 +6251,7 @@ cdef void Memory_Reverse(Memory_* that) nogil:
         Rack_Reverse(that.blocks)
 
 
-cdef bint Memory_Contiguous(const Memory_* that) nogil:
+cdef bint Memory_Contiguous(const Memory_* that) noexcept nogil:
     cdef:
         Rack_* blocks = that.blocks
         size_t block_count = Rack_Length(blocks)
@@ -6382,7 +6364,7 @@ cdef vint Memory_SetBoundSpan(Memory_* that, object bound_span) except -1:
         Memory_Crop_(that, bound_start_, bound_endex_)
 
 
-cdef addr_t Memory_Start(const Memory_* that) nogil:
+cdef addr_t Memory_Start(const Memory_* that) noexcept nogil:
     cdef:
         const Rack_* blocks
 
@@ -6397,7 +6379,7 @@ cdef addr_t Memory_Start(const Memory_* that) nogil:
         return that.bound_start
 
 
-cdef addr_t Memory_Endex(const Memory_* that) nogil:
+cdef addr_t Memory_Endex(const Memory_* that) noexcept nogil:
     cdef:
         const Rack_* blocks
 
@@ -6412,7 +6394,7 @@ cdef addr_t Memory_Endex(const Memory_* that) nogil:
         return that.bound_endex
 
 
-cdef (addr_t, addr_t) Memory_Span(const Memory_* that) nogil:
+cdef (addr_t, addr_t) Memory_Span(const Memory_* that) noexcept nogil:
     return Memory_Start(that), Memory_Endex(that)
 
 
@@ -6431,7 +6413,7 @@ cdef object Memory_Endin(const Memory_* that):
         return <object>that.bound_endex - 1
 
 
-cdef addr_t Memory_ContentStart(const Memory_* that) nogil:
+cdef addr_t Memory_ContentStart(const Memory_* that) noexcept nogil:
     cdef:
         const Rack_* blocks = that.blocks
 
@@ -6443,7 +6425,7 @@ cdef addr_t Memory_ContentStart(const Memory_* that) nogil:
         return that.bound_start
 
 
-cdef addr_t Memory_ContentEndex(const Memory_* that) nogil:
+cdef addr_t Memory_ContentEndex(const Memory_* that) noexcept nogil:
     cdef:
         const Rack_* blocks = that.blocks
 
@@ -6455,7 +6437,7 @@ cdef addr_t Memory_ContentEndex(const Memory_* that) nogil:
         return that.bound_start  # default to start
 
 
-cdef (addr_t, addr_t) Memory_ContentSpan(const Memory_* that) nogil:
+cdef (addr_t, addr_t) Memory_ContentSpan(const Memory_* that) noexcept nogil:
     return Memory_ContentStart(that), Memory_ContentEndex(that)
 
 
@@ -6471,7 +6453,7 @@ cdef object Memory_ContentEndin(const Memory_* that):
         return <object>that.bound_start - 1  # default to start-1
 
 
-cdef addr_t Memory_ContentSize(const Memory_* that) nogil:
+cdef addr_t Memory_ContentSize(const Memory_* that) noexcept nogil:
     cdef:
         const Rack_* blocks = that.blocks
         size_t block_index
@@ -6484,7 +6466,7 @@ cdef addr_t Memory_ContentSize(const Memory_* that) nogil:
     return content_size
 
 
-cdef size_t Memory_ContentParts(const Memory_* that) nogil:
+cdef size_t Memory_ContentParts(const Memory_* that) noexcept nogil:
     return Rack_Length(that.blocks)
 
 
@@ -6532,7 +6514,7 @@ cdef vint Memory_Validate(const Memory_* that) except -1:
 
 
 cdef (addr_t, addr_t) Memory_Bound_(const Memory_* that, addr_t start, addr_t endex,
-                                    bint start_, bint endex_) nogil:
+                                    bint start_, bint endex_) noexcept nogil:
     cdef:
         addr_t bound_start
         addr_t bound_endex
@@ -6584,7 +6566,7 @@ cdef (addr_t, addr_t) Memory_Bound(const Memory_* that, object start, object end
     return Memory_Bound_(that, start_, endex_, start__, endex__)
 
 
-cdef int Memory_Peek_(const Memory_* that, addr_t address) nogil:
+cdef int Memory_Peek_(const Memory_* that, addr_t address) noexcept nogil:
     cdef:
         const Rack_* blocks = that.blocks
         ssize_t block_index
@@ -7788,11 +7770,11 @@ cdef Rover_* Rover_Create(
     return that
 
 
-cdef addr_t Rover_Length(const Rover_* that) nogil:
+cdef addr_t Rover_Length(const Rover_* that) noexcept nogil:
     return that.endex - that.start
 
 
-cdef bint Rover_HasNext(const Rover_* that) nogil:
+cdef bint Rover_HasNext(const Rover_* that) noexcept nogil:
     if that.forward:
         return that.address < that.endex
     else:
@@ -7931,23 +7913,23 @@ cdef vint Rover_Release(Rover_* that) except -1:
     that.memory = NULL
 
 
-cdef bint Rover_Forward(const Rover_* that) nogil:
+cdef bint Rover_Forward(const Rover_* that) noexcept nogil:
     return that.forward
 
 
-cdef bint Rover_Infinite(const Rover_* that) nogil:
+cdef bint Rover_Infinite(const Rover_* that) noexcept nogil:
     return that.infinite
 
 
-cdef addr_t Rover_Address(const Rover_* that) nogil:
+cdef addr_t Rover_Address(const Rover_* that) noexcept nogil:
     return that.address
 
 
-cdef addr_t Rover_Start(const Rover_* that) nogil:
+cdef addr_t Rover_Start(const Rover_* that) noexcept nogil:
     return that.start
 
 
-cdef addr_t Rover_Endex(const Rover_* that) nogil:
+cdef addr_t Rover_Endex(const Rover_* that) noexcept nogil:
     return that.endex
 
 
@@ -9422,7 +9404,7 @@ cdef class Memory:
             const Memory_* memory = self._
             BlockView view = Memory_Read(memory, address, size)
 
-        return _cast(memoryview, view)
+        return _cast(memoryview, view._memoryview)
 
     def readinto(
         self: Memory,
@@ -9867,7 +9849,7 @@ cdef class Memory:
             addr_t endex_ = Memory_Endex(memory) if endex is None else <addr_t>endex
             BlockView view = Memory_View_(memory, start_, endex_)
 
-        return _cast(memoryview, view)
+        return _cast(memoryview, view._memoryview)
 
     def write(
         self: Memory,

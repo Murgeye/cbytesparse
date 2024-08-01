@@ -1,4 +1,4 @@
-cbytesparse.py.bytesparse
+﻿cbytesparse.py.bytesparse
 =========================
 
 .. currentmodule:: cbytesparse.py

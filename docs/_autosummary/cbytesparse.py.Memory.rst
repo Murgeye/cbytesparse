@@ -1,4 +1,4 @@
-cbytesparse.py.Memory
+﻿cbytesparse.py.Memory
 =====================
 
 .. currentmodule:: cbytesparse.py
