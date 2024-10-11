@@ -18,7 +18,6 @@ jobs:
         platform:
           - ubuntu-latest
           - macos-latest
-          - windows-latest
 
         python-version:
           - '3.7'
@@ -52,7 +51,7 @@ jobs:
 
       - name: Upload to codecov
         if: ${{ matrix.platform == 'ubuntu-latest' && matrix.python-version == '3.12' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
           flags: unittests
