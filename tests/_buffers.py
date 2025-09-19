@@ -24,9 +24,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import array
-from typing import ByteString
 from typing import Type
 from typing import cast as _cast
+
+from collections.abc import Sequence
 
 import pytest
 
@@ -128,23 +129,23 @@ class BytesMethodsSuite:
         BytesMethods(b'Hello, World!')
 
         a = array.array('B')
-        BytesMethods(_cast(ByteString, a))
+        BytesMethods(_cast(Sequence, a))
 
         a = array.array('H')
-        BytesMethods(_cast(ByteString, a))
+        BytesMethods(_cast(Sequence, a))
 
         a = array.array('L')
-        BytesMethods(_cast(ByteString, a))
+        BytesMethods(_cast(Sequence, a))
 
         if numpy is not None:  # pragma: no cover
             a = numpy.array([1, 2, 3], dtype=numpy.ubyte)
-            BytesMethods(_cast(ByteString, a))
+            BytesMethods(_cast(Sequence, a))
 
             a = numpy.array([1, 2, 3], dtype=numpy.ushort)
-            BytesMethods(_cast(ByteString, a))
+            BytesMethods(_cast(Sequence, a))
 
             a = numpy.array([1, 2, 3], dtype=numpy.uint)
-            BytesMethods(_cast(ByteString, a))
+            BytesMethods(_cast(Sequence, a))
 
     def test___iter__(self, hexview):
         BytesMethods = self.BytesMethods

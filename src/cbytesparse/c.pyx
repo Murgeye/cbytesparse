@@ -59,7 +59,6 @@ from itertools import islice as _islice
 from itertools import repeat as _repeat
 from itertools import zip_longest as _zip_longest
 from typing import Any
-from typing import ByteString
 from typing import Iterable
 from typing import Iterator
 from typing import List
@@ -71,6 +70,7 @@ from typing import Type
 from typing import TypeVar
 from typing import Union
 from typing import cast as _cast
+from collections.abc import Sequence
 
 from bytesparse.base import STR_MAX_CONTENT_SIZE
 from bytesparse.base import Address
@@ -1225,7 +1225,7 @@ cdef class BytesMethods:
 
     def __init__(
         self: BytesMethods,
-        wrapped: ByteString,
+        wrapped: Sequence,
     ):
         cdef:
             const byte_t[:] layout_test
@@ -1259,7 +1259,7 @@ cdef class BytesMethods:
 
     def __richcmp__(
         self: BytesMethods,
-        other: ByteString,
+        other: Sequence,
         op: int,
     ) -> bool:
 
@@ -1306,7 +1306,7 @@ cdef class BytesMethods:
 
     def capitalize(
         self: BytesMethods,
-    ) -> ByteString:
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1589,7 +1589,7 @@ cdef class BytesMethods:
 
     def lower(
         self: BytesMethods,
-    ) -> ByteString:
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1598,8 +1598,8 @@ cdef class BytesMethods:
 
     @staticmethod
     def maketrans(
-        chars_from not None: ByteString,
-        chars_to not None: ByteString,
+        chars_from not None: Sequence,
+        chars_to not None: Sequence,
     ) -> bytes:
 
         return Buffer_MakeTrans(chars_from, chars_to)
@@ -1622,7 +1622,7 @@ cdef class BytesMethods:
     @property
     def obj(
         self: BytesMethods,
-    ) -> Optional[ByteString]:
+    ) -> Optional[Sequence]:
 
         self.check_obj_()
         return self._obj
@@ -1684,12 +1684,12 @@ cdef class BytesMethods:
 
     def replace(
         self: BytesMethods,
-        old not None: ByteString,
-        new not None: ByteString,
+        old not None: Sequence,
+        new not None: Sequence,
         count: Optional[int] = None,
         start: Optional[int] = None,
         endex: Optional[int] = None,
-    ) -> ByteString:
+    ) -> Sequence:
         cdef:
             size_t count_ = SIZE_MAX if count is None else <size_t>count
             size_t start_ = SIZE_MIN if start is None else <size_t>start
@@ -1897,7 +1897,7 @@ cdef class BytesMethods:
 
     def swapcase(
         self: BytesMethods,
-    ) -> ByteString:
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1906,7 +1906,7 @@ cdef class BytesMethods:
 
     def title(
         self: BytesMethods,
-    ) -> ByteString:
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1929,8 +1929,8 @@ cdef class BytesMethods:
 
     def translate(
         self: BytesMethods,
-        table not None: ByteString,
-    ) -> ByteString:
+        table not None: Sequence,
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1939,7 +1939,7 @@ cdef class BytesMethods:
 
     def upper(
         self: BytesMethods,
-    ) -> ByteString:
+    ) -> Sequence:
 
         self.check_obj_()
         obj = bytearray(self._obj)
@@ -1975,7 +1975,7 @@ cdef class BytesMethods:
         return result
 
 
-ByteString.register(BytesMethods)
+Sequence.register(BytesMethods)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -2061,8 +2061,8 @@ cdef class InplaceView(BytesMethods):
 
     def replace(
         self: InplaceView,
-        old not None: ByteString,
-        new not None: ByteString,
+        old not None: Sequence,
+        new not None: Sequence,
         count: Optional[int] = None,
         start: Optional[int] = None,
         endex: Optional[int] = None,
@@ -2108,7 +2108,7 @@ cdef class InplaceView(BytesMethods):
 
     def translate(
         self: InplaceView,
-        table not None: ByteString,
+        table not None: Sequence,
     ) -> InplaceView:
 
         self.check_obj_()
