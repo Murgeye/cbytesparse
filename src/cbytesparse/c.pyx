@@ -54,6 +54,7 @@ from cpython.object cimport Py_LE
 from cpython.object cimport Py_LT
 from cpython.object cimport Py_NE
 
+from collections.abc import Sequence
 from itertools import count as _count
 from itertools import islice as _islice
 from itertools import repeat as _repeat
@@ -70,7 +71,6 @@ from typing import Type
 from typing import TypeVar
 from typing import Union
 from typing import cast as _cast
-from collections.abc import Sequence
 
 from bytesparse.base import STR_MAX_CONTENT_SIZE
 from bytesparse.base import Address

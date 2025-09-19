@@ -24,10 +24,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import array
+from collections.abc import Sequence
 from typing import Type
 from typing import cast as _cast
-
-from collections.abc import Sequence
 
 import pytest
 
