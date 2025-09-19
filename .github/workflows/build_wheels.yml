@@ -7,13 +7,13 @@ jobs:
   build_sdist:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build source package
         run: pipx run build --sdist
 
       - name: Upload source package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cbytesparse-sdist
           path: dist/*.tar.gz
@@ -27,10 +27,10 @@ jobs:
           - ubuntu-latest
           - macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build wheel packages
-        uses: pypa/cibuildwheel@v2.12.0
+        uses: pypa/cibuildwheel@v3
 
       - name: Upload wheel packages
         uses: actions/upload-artifact@v4
@@ -43,13 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download source package
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: cbytesparse-sdist
           path: dist
 
       - name: Download wheel packages
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
         with:
           name: cbytesparse-wheelhouse
           path: dist
@@ -62,13 +62,13 @@ jobs:
 #    if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
 #    steps:
 #      - name: Download source package
-#        uses: actions/download-artifact@v3
+#        uses: actions/download-artifact@v5
 #        with:
 #          name: cbytesparse-sdist
 #          path: dist
 #
 #      - name: Download wheel packages
-#        uses: actions/download-artifact@v3
+#        uses: actions/download-artifact@v5
 #        with:
 #          name: cbytesparse-wheelhouse
 #          path: dist
