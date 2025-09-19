@@ -28,7 +28,6 @@ r"""Common stuff, shared across modules."""
 import abc
 import collections.abc
 from typing import Any
-from typing import ByteString
 from typing import Callable
 from typing import Iterable
 from typing import List
@@ -41,7 +40,7 @@ try:
 except ImportError:  # pragma: no cover
     TypeAlias = Any  # Python < 3.10
 
-BytesLike: TypeAlias = Union[ByteString, memoryview]
+BytesLike: TypeAlias = Union[collections.abc.Sequence, memoryview]
 BytesFactory: TypeAlias = Callable[..., BytesLike]
 
 
@@ -62,7 +61,7 @@ Warnings:
     return wrapper
 
 
-class BaseBytesMethods(ByteString, collections.abc.Sequence):
+class BaseBytesMethods(collections.abc.Sequence):
     r"""Provides useful methods to a byte buffer.
 
     Python's :obj:`memoryview` and most *byte-like* objects do not provide many
