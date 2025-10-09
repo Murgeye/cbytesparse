@@ -12,39 +12,18 @@ Overview
     * - tests
       - | |gh_actions|
         | |codecov|
-    * - package
-      - | |version| |wheel|
-        | |supported-versions|
-        | |supported-implementations|
 
 .. |docs| image:: https://readthedocs.org/projects/cbytesparse/badge/?style=flat
     :target: https://readthedocs.org/projects/cbytesparse
     :alt: Documentation Status
 
-.. |gh_actions| image:: https://github.com/TexZK/cbytesparse/workflows/CI/badge.svg
+.. |gh_actions| image:: https://github.com/Murgeye/cbytesparse/workflows/CI/badge.svg?branch=cython3.0
     :alt: GitHub Actions Status
-    :target: https://github.com/TexZK/cbytesparse
+    :target: https://github.com/Murgeye/cbytesparse
 
-.. |codecov| image:: https://codecov.io/gh/TexZK/cbytesparse/branch/main/graphs/badge.svg?branch=main
+.. |codecov| image:: https://codecov.io/gh/Murgeye/cbytesparse/branch/cython3.0/graphs/badge.svg?branch=cython3.0
     :alt: Coverage Status
-    :target: https://codecov.io/github/TexZK/cbytesparse
-
-.. |version| image:: https://img.shields.io/pypi/v/cbytesparse.svg
-    :alt: PyPI Package latest release
-    :target: https://pypi.org/project/cbytesparse/
-
-.. |wheel| image:: https://img.shields.io/pypi/wheel/cbytesparse.svg
-    :alt: PyPI Wheel
-    :target: https://pypi.org/project/cbytesparse/
-
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/cbytesparse.svg
-    :alt: Supported versions
-    :target: https://pypi.org/project/cbytesparse/
-
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/cbytesparse.svg
-    :alt: Supported implementations
-    :target: https://pypi.org/project/cbytesparse/
-
+    :target: https://codecov.io/github/Murgeye/cbytesparse
 .. end-badges
 
 

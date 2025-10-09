@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["setuptools >= 61"]
+requires = ["setuptools >= 77"]
 
 [project]
 authors = [
@@ -12,18 +12,17 @@ classifiers = [
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Cython",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
     "Topic :: Software Development",
@@ -36,10 +35,10 @@ dependencies = [
 ]
 description = "Library to handle sparse bytes within a virtual memory space"
 dynamic = ["version"]
-license = {text = "BSD-2-Clause"}
+license = "BSD-2-Clause"
 name = "cbytesparse"
 readme = "README.rst"
-requires-python = ">= 3.7"
+requires-python = ">= 3.9"
 
 [project.optional-dependencies]
 bdist = ["cbuildwheel", "pytest"]
@@ -66,6 +65,8 @@ test-requires = ["pytest"]
 
 skip = [
     "cp36-*",       # Python 3.6
+    "cp37-*",       # Python 3.7
+    "cp38-*",       # Python 3.8
     "cp*_i686",     # CPython 32-bit
     "*-win32*",     # Windows 32-bit
     "pp*",          # pypy

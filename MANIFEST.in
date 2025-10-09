@@ -20,4 +20,4 @@ include pyproject.toml
 include setup.cfg
 include tox.ini
 
-global-exclude *.py[cod] __pycache__ *.so *.dylib
+global-exclude *.py[cod] __pycache__ *.so *.dylib .vscode/*
